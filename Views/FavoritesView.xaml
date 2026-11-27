@@ -1,0 +1,127 @@
+<UserControl x:Class="SaveSpace.Views.FavoritesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Brush.Canvas}">
+    <UserControl.Resources>
+        <Style x:Key="FilterChip" TargetType="ToggleButton" BasedOn="{StaticResource Btn.Nav}">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="11,5" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="26,20,26,22">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <StackPanel>
+                <TextBlock Text="FAVORIETEN" Style="{StaticResource Text.Eyebrow}" FontSize="10" />
+                <TextBlock Text="Favorieten" Style="{StaticResource Text.H1}" Margin="0,3,0,0" />
+                <TextBlock x:Name="SubtitleText" Text="De dingen die je altijd binnen handbereik wilt hebben."
+                           Style="{StaticResource Text.Small}" Margin="0,4,0,0" />
+            </StackPanel>
+            <Button Style="{StaticResource Btn.Secondary}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    Click="OpenSearch_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE721;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                    <TextBlock Text="Zoeken" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Border Grid.Row="1" x:Name="FavoriteProjectsPanel" Visibility="Collapsed" Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Line}" BorderThickness="1" CornerRadius="{DynamicResource Radius.M}" Padding="12,9" Margin="0,13,0,0">
+            <StackPanel>
+                <TextBlock Text="FAVORIETPROJECTEN" Style="{StaticResource Text.Eyebrow}" FontSize="9" Margin="0,0,0,7" />
+                <ItemsControl x:Name="FavoriteProjectsList">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource Btn.Secondary}" Tag="{Binding}" Click="ProjectFavorite_Click"
+                                    Width="205" Height="48" HorizontalContentAlignment="Left" Margin="0,0,8,0" Padding="9,6">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8B7;" Style="{StaticResource Text.Icon}" FontSize="13"
+                                               Foreground="{Binding ColorBrush}" Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding Name}" FontSize="11.5" FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,13,0,12">
+            <ToggleButton x:Name="FilterAll" Style="{StaticResource FilterChip}" Content="Alles" IsChecked="True" Click="Filter_Click" Tag="all" />
+            <ToggleButton x:Name="FilterNotes" Style="{StaticResource FilterChip}" Content="Notities" Click="Filter_Click" Tag="notes" />
+            <ToggleButton x:Name="FilterLinks" Style="{StaticResource FilterChip}" Content="Weblinks" Click="Filter_Click" Tag="links" />
+            <ToggleButton x:Name="FilterFiles" Style="{StaticResource FilterChip}" Content="Bestanden" Click="Filter_Click" Tag="files" />
+            <TextBlock x:Name="CountText" Text="" Style="{StaticResource Text.Tiny}" VerticalAlignment="Center" Margin="12,0,0,0" />
+        </StackPanel>
+
+        <Grid Grid.Row="3">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="FavoritesList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Line}"
+                                    BorderThickness="1" CornerRadius="{DynamicResource Radius.M}" Margin="0,0,0,5"
+                                    MouseLeftButtonUp="Item_MouseLeftButtonUp" Cursor="Hand" Tag="{Binding}">
+                                <Grid Margin="12,9">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="34" Height="34" CornerRadius="{DynamicResource Radius.S}"
+                                            Background="{DynamicResource Brush.SurfaceAlt}" Margin="0,0,11,0">
+                                        <TextBlock Text="{Binding Icon}" Style="{StaticResource Text.Icon}" FontSize="14"
+                                                   Foreground="{Binding AccentBrush}" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontSize="12.5" FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding MetaLine}" Style="{StaticResource Text.Tiny}"
+                                                   TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2" Text="{Binding KindLabel}" Style="{StaticResource Text.Tiny}"
+                                               Foreground="{DynamicResource Brush.Faint}" VerticalAlignment="Center" Margin="12,0" />
+                                    <TextBlock Grid.Column="3" Text="{Binding DateLabel}" Style="{StaticResource Text.Tiny}"
+                                               Foreground="{DynamicResource Brush.Faint}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <Button Grid.Column="4" Style="{StaticResource Btn.IconSmall}" Content="{Binding FavoriteGlyph}"
+                                            Foreground="{DynamicResource Brush.DarkYellow}" Tag="{Binding}" Click="Unfavorite_Click"
+                                            ToolTip="Uit favorieten halen" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Border x:Name="EmptyPanel" Visibility="Collapsed" Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Line}" BorderThickness="1" CornerRadius="{DynamicResource Radius.XL}"
+                    Padding="30,26">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="400">
+                    <Border Width="48" Height="48" CornerRadius="{DynamicResource Radius.L}" Background="{DynamicResource Brush.SurfaceAlt}"
+                            HorizontalAlignment="Center">
+                        <TextBlock Text="&#xE734;" Style="{StaticResource Text.Icon}" FontSize="20"
+                                   Foreground="{DynamicResource Brush.DarkYellow}" />
+                    </Border>
+                    <TextBlock x:Name="EmptyTitle" Text="Nog geen favorieten" Style="{StaticResource Text.H2}"
+                               TextAlignment="Center" Margin="0,14,0,6" />
+                    <TextBlock x:Name="EmptyText" Text="Klik op de ster bij een notitie, link of bestand om het hier te bewaren."
+                               Style="{StaticResource Text.Small}" TextAlignment="Center" TextWrapping="Wrap" />
+                    <Button Style="{StaticResource Btn.Primary}" Content="Naar mijn notities" Click="OpenNotes_Click"
+                            HorizontalAlignment="Center" Margin="0,16,0,0" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,8 @@
+# Build-uitvoer en IDE-bestanden: niet meeleveren
+bin/
+obj/
+publish/
+work/
+.vs/
+*.user
+*.suo

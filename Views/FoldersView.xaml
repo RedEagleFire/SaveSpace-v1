@@ -1,0 +1,236 @@
+<UserControl x:Class="SaveSpace.Views.FoldersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource Brush.Canvas}">
+    <UserControl.Resources>
+        <Style x:Key="ProjectTile" TargetType="Border">
+            <Setter Property="Width" Value="252" />
+            <Setter Property="Height" Value="118" />
+            <Setter Property="Margin" Value="0,0,10,10" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="{DynamicResource Radius.L}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Brush.SurfaceRaised}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource Brush.LineStrong}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="26,20,26,22">
+        <!-- Overzicht -->
+        <Grid x:Name="OverviewPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="PROJECTEN" Style="{StaticResource Text.Eyebrow}" FontSize="10" />
+                    <TextBlock Text="Projecten" Style="{StaticResource Text.H1}" Margin="0,3,0,0" />
+                    <TextBlock x:Name="OverviewSubtitle" Text="Bundel notities en bestanden per onderwerp."
+                               Style="{StaticResource Text.Small}" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Style="{StaticResource Btn.Secondary}" Click="AddLinkedFolder_Click" Margin="0,0,7,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE838;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                            <TextBlock Text="Map koppelen" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Btn.Primary}" Click="NewProject_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                            <TextBlock Text="Nieuw project" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,18,0,0" MaxHeight="430">
+                <StackPanel>
+                    <WrapPanel x:Name="ProjectsPanel" />
+                    <Border x:Name="NoProjects" Visibility="Collapsed" Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.Line}" BorderThickness="1"
+                            CornerRadius="{DynamicResource Radius.L}" Padding="20,16" Margin="0,4,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Nog geen projecten." Style="{StaticResource Text.Small}" />
+                            <Button Style="{StaticResource Btn.Ghost}" Content="Maak het eerste project  →" Click="NewProject_Click"
+                                    FontSize="11" Margin="8,0,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Margin="0,18,0,8">
+                        <TextBlock Text="GEKOPPELDE MAPPEN" Style="{StaticResource Text.Eyebrow}" FontSize="9.5" />
+                        <TextBlock Text="Blijft op zijn plek staan; SaveSpace leest alleen." Style="{StaticResource Text.Tiny}"
+                                   HorizontalAlignment="Right" />
+                    </Grid>
+                    <ItemsControl x:Name="LinkedList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Line}"
+                                        BorderThickness="1" CornerRadius="{DynamicResource Radius.M}" Margin="0,0,0,4">
+                                    <Grid Margin="12,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="30" Height="30" CornerRadius="{DynamicResource Radius.S}"
+                                                Background="{DynamicResource Brush.FolderSoft}" Margin="0,0,10,0">
+                                            <TextBlock Text="&#xE838;" Style="{StaticResource Text.Icon}" FontSize="13"
+                                                       Foreground="{DynamicResource Brush.Folder}" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Path}" Style="{StaticResource Text.Tiny}" FontSize="10"
+                                                       TextTrimming="CharacterEllipsis" MaxWidth="620" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding StatusLabel}" Style="{StaticResource Text.Tiny}"
+                                                   VerticalAlignment="Center" Margin="10,0" />
+                                        <Button Grid.Column="3" Style="{StaticResource Btn.Ghost}" Content="Openen"
+                                                Tag="{Binding}" Click="OpenLinked_Click" FontSize="10.5" Padding="8,4" />
+                                        <Button Grid.Column="4" Style="{StaticResource Btn.IconSmall}" Content="&#xE74D;"
+                                                Tag="{Binding}" Click="RemoveLinked_Click" ToolTip="Koppeling verwijderen" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="NoLinked" Text="Nog geen mappen gekoppeld. Koppel een bestaande map om de inhoud hier te bekijken zonder bestanden te verplaatsen."
+                               Style="{StaticResource Text.Tiny}" TextWrapping="Wrap" Margin="2,2,0,10" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- Projectdetail -->
+        <Grid x:Name="DetailPanel" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource Btn.Icon}" Content="&#xE72B;" Click="Back_Click" ToolTip="Terug naar projecten"
+                            Margin="0,0,6,0" />
+                    <Border x:Name="DetailBadge" Width="42" Height="42" CornerRadius="{DynamicResource Radius.M}"
+                            Background="{DynamicResource Brush.AccentSoft}" VerticalAlignment="Center">
+                        <TextBlock x:Name="DetailIcon" Text="&#xE8B7;" Style="{StaticResource Text.Icon}" FontSize="18"
+                                   Foreground="{DynamicResource Brush.Accent}" />
+                    </Border>
+                    <StackPanel VerticalAlignment="Center" Margin="11,0,0,0">
+                        <TextBlock x:Name="DetailName" Text="" Style="{StaticResource Text.H1}" FontSize="24" />
+                        <TextBlock x:Name="DetailMeta" Text="" Style="{StaticResource Text.Small}" FontSize="11.5" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="FavoriteFolderButton" Style="{StaticResource Btn.IconSmall}" Click="FavoriteFolder_Click"
+                            ToolTip="Project als favoriet bewaren" Margin="0,0,6,0" />
+                    <Button Style="{StaticResource Btn.Secondary}" Click="EditProject_Click" Margin="0,0,6,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE70F;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                            <TextBlock Text="Projectinstellingen" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource Btn.Primary}" Click="AddNote_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                            <TextBlock Text="Nieuwe notitie" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,0,10">
+                <Button Style="{StaticResource Btn.Ghost}" Click="AddFile_Click" FontSize="11">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8E5;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                        <TextBlock Text="Bestand toevoegen" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource Btn.Ghost}" Click="AddExisting_Click" FontSize="11">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8B7;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                        <TextBlock Text="Bestaand item verplaatsen" />
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource Btn.Ghost}" Click="DeleteProject_Click" FontSize="11"
+                        Foreground="{DynamicResource Brush.Danger}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74D;" Style="{StaticResource Text.Icon}" FontSize="12" Margin="0,0,6,0" />
+                        <TextBlock Text="Project verwijderen" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <Grid Grid.Row="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="ProjectItemsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Line}"
+                                        BorderThickness="1" CornerRadius="{DynamicResource Radius.M}" Margin="0,0,0,5"
+                                        MouseLeftButtonUp="Item_MouseLeftButtonUp" Cursor="Hand" Tag="{Binding}">
+                                    <Grid Margin="12,9">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="34" Height="34" CornerRadius="{DynamicResource Radius.S}"
+                                                Background="{DynamicResource Brush.SurfaceAlt}" Margin="0,0,11,0">
+                                            <TextBlock Text="{Binding Icon}" Style="{StaticResource Text.Icon}" FontSize="14"
+                                                       Foreground="{Binding AccentBrush}" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Title}" FontSize="12.5" FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding MetaLine}" Style="{StaticResource Text.Tiny}"
+                                                       TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding KindLabel}" Style="{StaticResource Text.Tiny}"
+                                                   Foreground="{DynamicResource Brush.Faint}" VerticalAlignment="Center" Margin="12,0" />
+                                        <TextBlock Grid.Column="3" Text="{Binding DateLabel}" Style="{StaticResource Text.Tiny}"
+                                                   Foreground="{DynamicResource Brush.Faint}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                        <Button Grid.Column="4" Style="{StaticResource Btn.IconSmall}" Content="&#xE8B7;"
+                                                Tag="{Binding}" Click="RemoveFromProject_Click" ToolTip="Uit project halen" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <Border x:Name="ProjectEmpty" Visibility="Collapsed" Background="{DynamicResource Brush.Surface}"
+                        BorderBrush="{DynamicResource Brush.Line}" BorderThickness="1" CornerRadius="{DynamicResource Radius.XL}"
+                        Padding="30,26">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="400">
+                        <Border Width="46" Height="46" CornerRadius="{DynamicResource Radius.L}" Background="{DynamicResource Brush.SurfaceAlt}"
+                                HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE8B7;" Style="{StaticResource Text.Icon}" FontSize="19"
+                                       Foreground="{DynamicResource Brush.Faint}" />
+                        </Border>
+                        <TextBlock Text="Dit project is nog leeg" Style="{StaticResource Text.H2}" TextAlignment="Center"
+                                   Margin="0,14,0,5" />
+                        <TextBlock Text="Maak een notitie of voeg een bestaand document, foto of video toe."
+                                   Style="{StaticResource Text.Small}" TextAlignment="Center" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                            <Button Style="{StaticResource Btn.Primary}" Content="Nieuwe notitie" Click="AddNote_Click" Margin="0,0,6,0" />
+                            <Button Style="{StaticResource Btn.Secondary}" Content="Bestand toevoegen" Click="AddFile_Click" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

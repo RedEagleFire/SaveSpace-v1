@@ -1,0 +1,35 @@
+<Window x:Class="SaveSpace.Views.Dialogs.ConfirmDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Bevestigen" Width="480" SizeToContent="Height" WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" ShowInTaskbar="False" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"
+        FontFamily="{DynamicResource Font.BodyFamily}" FontSize="{DynamicResource Font.Body}"
+        Foreground="{DynamicResource Brush.Ink}">
+    <Border Margin="20" Background="{DynamicResource Brush.Surface}" BorderBrush="{DynamicResource Brush.Line}"
+            BorderThickness="1" CornerRadius="{DynamicResource Radius.L}" Effect="{DynamicResource Shadow.Hover}"
+            MouseLeftButtonDown="Root_MouseLeftButtonDown">
+        <StackPanel Margin="26,22,26,22">
+            <Grid Margin="0,0,0,14">
+                <StackPanel Orientation="Horizontal">
+                    <Border x:Name="IconBadge" Width="38" Height="38" CornerRadius="{DynamicResource Radius.S}"
+                            Background="{DynamicResource Brush.DangerSoft}" Margin="0,0,12,0">
+                        <TextBlock x:Name="IconText" Text="&#xE7BA;" Style="{StaticResource Text.Icon}" FontSize="16"
+                                   Foreground="{DynamicResource Brush.Danger}" />
+                    </Border>
+                    <TextBlock x:Name="TitleText" Text="Weet je het zeker?" Style="{StaticResource Text.H3}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+                <Button Style="{StaticResource Btn.IconSmall}" Content="&#xE8BB;" HorizontalAlignment="Right"
+                        VerticalAlignment="Top" Click="Cancel_Click" ToolTip="Sluiten" />
+            </Grid>
+            <TextBlock x:Name="MessageText" Style="{StaticResource Text.Body}" Foreground="{DynamicResource Brush.Muted}"
+                       Margin="0,0,0,22" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="CancelButton" Style="{StaticResource Btn.Secondary}" Content="Annuleren"
+                        Click="Cancel_Click" Margin="0,0,8,0" IsCancel="True" />
+                <Button x:Name="ConfirmButton" Style="{StaticResource Btn.Danger}" Content="Verwijderen"
+                        Click="Confirm_Click" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
